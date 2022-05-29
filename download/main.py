@@ -227,7 +227,8 @@ video1=[]
 def get_info():
     f=open('1111.txt')
     for i in f.readlines():
-
+        if len(i)<10:
+            continue
         print(i.split()[0][19:20]) #u为单个  v为主页
         print(i.split()[0][19:20]=='v')
         if i.split()[0][19:20]=='v':
@@ -242,10 +243,10 @@ def check_file_exist(file):
     if not os.path.exists(file):
         os.mkdir(file)
 check()
-# get_info()
-#
-# for i in video1:
-#     pa(i)
+get_info()
+
+for i in video1:
+    pa(i)
 
 # turn()
 import ipdb;ipdb.set_trace()
