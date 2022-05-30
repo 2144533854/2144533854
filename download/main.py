@@ -42,15 +42,17 @@ cloud = cloudscraper.create_scraper()
 def get_ts(id,headers,name):
     i=0
     url=f'https://la.killcovid2021.com/m3u8/{id}/{id}{i}.ts'
-    fname = file+name
+    fname = file.join(name)
+    print(fname)
     r1='error'
     while r1=='error':
         r1=do_request(url)
         # import ipdb;ipdb.set_trace()
 
     temp1=int(r1.status_code)
-
+    import ipdb;ipdb.set_trace()
     os.mkdir(fname)
+
     while(temp1==200):
 
         url = f'https://la.killcovid2021.com/m3u8/{id}/{id}{i}.ts'
@@ -89,6 +91,7 @@ def get_have_down():
 print(get_have_down())
 def do_request(url):
     try:
+        # import ipdb;ipdb.set_trace()
         r1 = cloud.get(url, headers=headers)
         return r1
     except Exception as e:
@@ -156,6 +159,7 @@ def pa(url3):
 file= os.path.dirname(os.path.abspath(__file__))+'/video'
 file2=os.path.dirname(os.path.abspath(__file__))+'/归档'
 file3=os.path.dirname(os.path.abspath(__file__))+'/归档4'
+file4=os.path.dirname(os.path.abspath(__file__))+'/have_downloaded.txt'
 os.path.exists(file)
 def m3u82mp4(ts,name):
 
@@ -239,6 +243,7 @@ def get_info():
 def check():
     check_file_exist(file)
     check_file_exist(file3)
+    check_file_exist(file4)
 def check_file_exist(file):
     if not os.path.exists(file):
         os.mkdir(file)
