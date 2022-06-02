@@ -99,13 +99,15 @@ def g(url):
         c1.join()
 
 
-
+cp=[]
 for j in range(1,3):
     url=f'https://7mmtv.tv/zh/uncensored_makersr/37/FC2/{j}.html'
 
     c1=threading.Thread(target=g,args=(url,))
+    cp.append(c1)
     c1.start()
-    # c1.join()
+for c in cp:
+    c.join()
 base2 = os.path.join(basefile,'7mm_graph','index.json')
 f2=open(base2,'w')
 json.dump(json_7mm,f2)
