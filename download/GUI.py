@@ -14,6 +14,8 @@ from requests import get
 # 队列 后进先出
 q = queue.Queue()
 q1 = queue.Queue()
+headers={ 'Content-Type': 'text/html'}
+proxies={'http':None,'https':None}
 def mian2(url,q):
     try :
         # response.headers['content-length']得到的数据类型是str而不是int
@@ -41,14 +43,15 @@ def mian2(url,q):
 
 def mian(url,q):
     try :
-        with closing(get(url, stream=True)) as response:
+        with closing(get(url, stream=True,headers=headers)) as response:
+            print(response.headers)
             name = url[len(url) - 18:]
             chunk_size = 4096  # 单次请求最大值
             # response.headers['content-length']得到的数据类型是str而不是int
             content_size = int(response.headers['content-length'])  # 文件总大小
             data_count = 0  # 当前已传输的大小
             size=int(content_size / 1024 / 1024)
-            print(f'{name} is downloading....  size: {size}mb')
+            # print(f'{name} is downloading....  size: {size}mb')
             with open(f'{size}mb+{name}', "wb") as file:
                 for data in response.iter_content(chunk_size=chunk_size):
                     file.write(data)
@@ -57,13 +60,13 @@ def mian(url,q):
                     data_count = data_count + len(data)
                     # 实时进度条进度
                     now_jd = (data_count / content_size) * 100
-                    q.put(now_jd + 1)  # 向队列中放入当前任务完成度
+                    q.put({'name':name,'size':size,'data_count':data_count / 1024 / 1024,'now_jd':now_jd})  # 向队列中放入当前任务完成度
             print(name+'finish')
                     # %% 表示%
 
             return '2'
     except Exception as e:
-        # print(e)
+        print(e)
         return 'error'
 
 
@@ -93,7 +96,7 @@ layout = [[sg.Text('任务完成进度')],
 n=3
 for i in range(n):
 
-    layout.append([sg.ProgressBar(50, orientation='h', size=(50, 20), key=f'progressbar{i}')])
+    layout.append([sg.Text('',key=f'name{i}'),sg.ProgressBar(50, orientation='h', size=(50, 20), key=f'progressbar{i}'),sg.Text('',key=f'data_count{i}'),sg.Text('',key=f'size{i}'),sg.Text('',key=f'now_jd{i}')])
     queuelist.append(queue.Queue())
 # window只需将自定义的布局加载出来即可 第一个参数是窗口标题。
 window = sg.Window('机器人执行进度', layout)
@@ -125,7 +128,7 @@ while True:  # 死循环不断读取队列中数据，直到读到100
         for i in range(n):
             t=queuelist[i].get_nowait()
             valuelist.append(t)
-            print(f'-------------bar{i} value is {t}')
+            # print(f'-------------bar{i} value is {t}')
 
 
     except Empty:  # 没有读取到数据的话，继续window.read
@@ -133,7 +136,23 @@ while True:  # 死循环不断读取队列中数据，直到读到100
     else:  # 读取到数据
         for i in range(n):
             print(f'bar{i} value is {valuelist[i]}')
-            barlist[i].UpdateBar(valuelist[i])
+            name=valuelist[i].get('name')
+
+            size=valuelist[i].get('size')
+            data_count=valuelist[i].get('data_count')
+            print(data_count)
+            now_jd=valuelist[i].get('now_jd')
+            barlist[i].UpdateBar(now_jd)
+            if name:
+                window[f'name{i}'].update(name)
+            if size:
+                window[f'size{i}'].update(str(size)+'mb')
+            if data_count>=0 and data_count is not None:
+                print(data_count)
+                print(window[f'data_count{i}'].update(str(round(data_count,3))+'mb/'))
+            if now_jd:
+                window[f'now_jd{i}'].update(str(round(int(now_jd*100),3))+'%')
+
         # if valuelist[i] == 50:  # 进度满跳出循环
         #     break
 def mian(url,q):
@@ -145,7 +164,7 @@ def mian(url,q):
             content_size = int(response.headers['content-length'])  # 文件总大小
             data_count = 0  # 当前已传输的大小
             size=int(content_size / 1024 / 1024)
-            print(f'{name} is downloading....  size: {size}mb')
+            # print(f'{name} is downloading....  size: {size}mb')
             with open(f'{size}mb+{name}', "wb") as file:
                 for data in response.iter_content(chunk_size=chunk_size):
                     file.write(data)
@@ -154,7 +173,7 @@ def mian(url,q):
                     data_count = data_count + len(data)
                     # 实时进度条进度
                     now_jd = (data_count / content_size) * 100
-                    q.put(now_jd + 1)  # 向队列中放入当前任务完成度
+                    q.put({'name':name,'size':size,'data_count':data_count / 1024 / 1024,'now_jd':now_jd})  # 向队列中放入当前任务完成度
             print(name+'finish')
                     # %% 表示%
 
@@ -169,7 +188,7 @@ def mian2(url,q):
         content_size = random.randint(1000000,2000000)
         data_count = 0  # 当前已传输的大小
         size=int(content_size / 1024 )
-        print(f' is downloading....  size: {size}mb')
+        # print(f' is downloading....  size: {size}mb')
 
         while(data_count<=content_size):
             # done_block = int((data_count / content_size) * 50)
