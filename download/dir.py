@@ -1,5 +1,6 @@
 import os
 import json
+import sys
 import threading
 import copy
 import requests
@@ -61,18 +62,19 @@ def count():#统计每个文件夹图片数量
     print(file1)
     f3=[]
     f4=[]
-    for f1,f2,ff3 in os.walk(file1):
-        f3=copy.deepcopy(f2)
-        break
+    f3=os.listdir(file1)
+    if '.DS_Store' in f3:
+        f3.remove('.DS_Store')
+
+    # for f1,f2,ff3 in os.walk(file1):
+    #     f3=copy.deepcopy(f2)
+    #     break
 
     for i in f3:
         file2=os.path.join(file1,i)
-        for f11, f22, f33 in os.walk(file2):
-            data1[i]= len(f22)
-            break
-
+        data1[i] = len(os.listdir(file2))
     return data1
-count()
+print(count())
 
 def should():#每个文件夹应有个数
     for k,v in f1.items():
