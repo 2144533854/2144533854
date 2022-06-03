@@ -36,6 +36,7 @@ import requests
 from bs4 import BeautifulSoup
 import os
 import  cloudscraper
+import multiprocessing
 cloud = cloudscraper.create_scraper()
 
 
@@ -50,7 +51,7 @@ def get_ts(id,headers,name):
 
     temp1=int(r1.status_code)
 
-    os.mkdir(fname)
+    os.mkdir(fname.replace(':',''))
     while(temp1==200):
 
         url = f'https://la.killcovid2021.com/m3u8/{id}/{id}{i}.ts'
@@ -127,7 +128,7 @@ def pa(url3):
                     r1 = do_request(url2)
                 r1 = r1.text
                 f2=BeautifulSoup(r1, 'html.parser')
-                time=f2.find_all('span',class_="video-info-span")[0].text+' '
+                time=f2.find_all('span',class_="video-info-span")[0].text.replace(':','')+' '
                 temp = f2.find_all(style="display:none;")[1].text#ts id
                 video_info[name[j]]={
                     'author':author,
@@ -153,7 +154,7 @@ def pa(url3):
 
 
 
-file= os.path.dirname(os.path.abspath(__file__))+'/video'
+file= os.path.join(os.path.dirname(os.path.abspath(__file__)),'video')
 file2=os.path.dirname(os.path.abspath(__file__))+'/归档'
 file3=os.path.dirname(os.path.abspath(__file__))+'/归档4'
 os.path.exists(file)
@@ -244,9 +245,16 @@ def check_file_exist(file):
         os.mkdir(file)
 check()
 get_info()
+c2=[]
 for i in video1:
     print(i)
     pa(i)
+    c1=multiprocessing.Process(target=pa,args=(i,))
+    c1.start()
+    c2.append(c1)
+
+for i in c2:
+    i.join()
 
 # turn()
 
