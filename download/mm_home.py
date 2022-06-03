@@ -39,7 +39,7 @@ def load_img(fullname,urllist):
 
 
 def check():
-    return os.path.realpath(__file__).replace('7mm_home.py','')
+    return os.path.realpath(__file__).replace('mm_home.py','')
     #
 
 basefile=check()
@@ -118,7 +118,7 @@ f2.close()
 '''
 
 Traceback (most recent call last):
-  File "/Users/storm.shen/web/izone/download/7mm_home.py", line 30, in <module>
+  File "/Users/storm.shen/web/izone/download/mm_home.py", line 30, in <module>
     f.write(r1.content)
 TypeError: write() argument must be str, not bytes
 '''
