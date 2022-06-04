@@ -4,7 +4,7 @@ import sys
 import threading
 import copy
 import requests
-
+import shutil
 
 def download_img(url,fullname,i):
     r1 = do(url)
@@ -37,6 +37,7 @@ def down_mkdir(f1):
         fullname = os.path.join(basefile, '7mm_graph', 'jpg', k)
         if os.path.exists(fullname):
             print(f'{k} has exist')
+            continue
         else:
             os.mkdir(fullname)
         for i in range(len(v['imglist'])):
@@ -81,17 +82,22 @@ def should():#每个文件夹应有个数
     return data2
 should()
 unfinish={}
+dell=[]
 for k,v in data2.items():
-
     if v==data1.get(k):
         pass
     else:
         if data1.get(k) :
+            file1 = os.path.join(basefile, '7mm_graph', 'jpg',k)
+            dell.append(file1)
             print(v,data1.get(k))
         unfinish[k]=f1.get(k)
 # for i in unfinish:
 #     print(i)
 print(len(unfinish))
+print(dell)
+for i in dell:
+    shutil.rmtree(i)
 # down_mkdir(unfinish)
 
 
