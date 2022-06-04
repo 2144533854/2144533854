@@ -32,11 +32,14 @@
 #         # for d in dirs:
 #         #     print(os.path.join(root, d))
 #
+from pathlib import PureWindowsPath
+
 import requests
 from bs4 import BeautifulSoup
 import os
 import  cloudscraper
 import multiprocessing
+from threading import Thread
 cloud = cloudscraper.create_scraper()
 
 
@@ -96,7 +99,7 @@ def do_request(url):
         print(str(e))
         return 'error'
 
-def pa(url3):
+def  pa(url3):
     t=[]
     for i in range(1,1000):
         try:
@@ -246,10 +249,11 @@ def check_file_exist(file):
 check()
 get_info()
 c2=[]
+
 for i in video1:
     print(i)
-    pa(i)
-    c1=multiprocessing.Process(target=pa,args=(i,))
+  #  pa(video1[30])
+    c1=Thread(target=pa,args=(i,),daemon=True)
     c1.start()
     c2.append(c1)
 
@@ -257,6 +261,5 @@ for i in c2:
     i.join()
 
 # turn()
-
 
 

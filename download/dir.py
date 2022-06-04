@@ -32,23 +32,22 @@ f=open('all.json','r')
 f1 = json.load(f)
 c2=[]
 i1=0
-# for k,v in f1.items():
-#     i1+=1
-#     if i1==100:
-#         i1=0
-#         import ipdb;ipdb.set_trace()
-#     fullname = os.path.join(basefile, '7mm_graph', 'jpg', k)
-#     if os.path.exists(fullname):
-#         print(f'{k} has exist')
-#     else:
-#         os.mkdir(fullname)
-#     for i in range(len(v['imglist'])):
-#         c1=threading.Thread(target=download_img,args=(v['imglist'][i],fullname,i,))
-#         c1.start()
-#         c2.append(c1)
-#
-# for i in c2:
-#     i.join()
+def down_mkdir(f1):
+    for k,v in f1.items():
+        fullname = os.path.join(basefile, '7mm_graph', 'jpg', k)
+        if os.path.exists(fullname):
+            print(f'{k} has exist')
+        else:
+            os.mkdir(fullname)
+        for i in range(len(v['imglist'])):
+            c1=threading.Thread(target=download_img,args=(v['imglist'][i],fullname,i,))
+            c1.start()
+            c2.append(c1)
+
+    for i in c2:
+        i.join()
+
+
 def big(f1):#统计所有图片大小
     sum=0
     for k,v in f1.items():
@@ -81,14 +80,19 @@ def should():#每个文件夹应有个数
         data2[k]=len(v['imglist'])
     return data2
 should()
-unfinish=[]
+unfinish={}
 for k,v in data2.items():
 
     if v==data1.get(k):
         pass
     else:
-        unfinish.append(k)
-print(unfinish)
+        if data1.get(k) :
+            print(v,data1.get(k))
+        unfinish[k]=f1.get(k)
+# for i in unfinish:
+#     print(i)
 print(len(unfinish))
+# down_mkdir(unfinish)
+
 
 
