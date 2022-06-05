@@ -87,17 +87,22 @@ for k,v in data2.items():
     if v==data1.get(k):
         pass
     else:
-        if data1.get(k) :
-            file1 = os.path.join(basefile, '7mm_graph', 'jpg',k)
+      #  print(data1.get(k), v)
+        if data1.get(k)==0:
+            file1 = os.path.join(basefile, '7mm_graph', 'jpg', k)
             dell.append(file1)
-            print(v,data1.get(k))
+            print(data1.get(k),v)
         unfinish[k]=f1.get(k)
-# for i in unfinish:
-#     print(i)
+for i in unfinish:
+    print(i)
+
 print(len(unfinish))
-print(dell)
-for i in dell:
-    shutil.rmtree(i)
+
+# for i in dell:
+#     shutil.rmtree(i)
+#     print(i)
+
+print(unfinish)
 # down_mkdir(unfinish)
 
 
